@@ -2,7 +2,7 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-## 🐍 Python Environment Rules
+## Python Environment Rules
 
 **CRITICAL**: This project uses **UV** for all Python operations. Never use `python -m`, `pip install`, or `python script.py` directly.
 
@@ -16,7 +16,7 @@ uv pip install package           # Install dependencies
 uv run python script.py          # Execute scripts
 ```
 
-## 📂 Project Structure
+## Project Structure
 
 > **⚠️ IMPORTANT**: The `.claude-plugin/` directory and TypeScript plugin system described in older docs **DO NOT EXIST** in v4.1.9.
 > This is planned for v5.0 (see [issue #419](https://github.com/SuperClaude-Org/SuperClaude_Framework/issues/419)).
@@ -56,7 +56,7 @@ TASK.md                  # Current tasks
 KNOWLEDGE.md             # Accumulated insights
 ```
 
-## 🔧 Development Workflow
+## Development Workflow
 
 ### Essential Commands
 
@@ -85,7 +85,7 @@ make sync-plugin-repo        # Sync artefacts into ../SuperClaude_Plugin
 make clean            # Remove build artifacts
 ```
 
-## 📦 Core Architecture
+## Core Architecture
 
 ### Pytest Plugin (Auto-loaded)
 
@@ -136,7 +136,7 @@ Registered via `pyproject.toml` entry point, automatically available after insta
 - Project-local detection via `.claude-plugin/plugin.json`
 - Marketplace distribution support
 
-## 🧪 Testing with PM Agent
+## Testing with PM Agent
 
 ### Example Test with Markers
 
@@ -165,7 +165,7 @@ def test_with_budget(token_budget):
     assert token_budget.limit == 1000
 ```
 
-## 🌿 Git Workflow
+## Git Workflow
 
 **Branch structure**: `master` (production) ← `integration` (testing) ← `feature/*`, `fix/*`, `docs/*`
 
@@ -206,7 +206,7 @@ git worktree add ../SuperClaude_Framework-feature feature/pm-agent
 git worktree remove ../SuperClaude_Framework-integration
 ```
 
-## 📝 Key Documentation Files
+## Key Documentation Files
 
 **PLANNING.md** - Architecture, design principles, absolute rules
 **TASK.md** - Current tasks and priorities
@@ -214,7 +214,7 @@ git worktree remove ../SuperClaude_Framework-integration
 
 Additional docs in `docs/user-guide/`, `docs/developer-guide/`, `docs/reference/`
 
-## 💡 Core Development Principles
+## Core Development Principles
 
 ### 1. Evidence-Based Development
 **Never guess** - verify with official docs (Context7 MCP, WebFetch, WebSearch) before implementation.
@@ -231,7 +231,7 @@ Use **Wave → Checkpoint → Wave** pattern (3.5x faster). Example: `[Read file
 - Complex (feature): 2,500 tokens
 - Confidence check ROI: spend 100-200 to save 5,000-50,000
 
-## 🔧 MCP Server Integration
+## MCP Server Integration
 
 Integrates with multiple MCP servers via **airis-mcp-gateway**.
 
@@ -246,7 +246,7 @@ Integrates with multiple MCP servers via **airis-mcp-gateway**.
 
 **Usage**: TypeScript plugins and Python pytest plugin can call MCP servers. Always prefer MCP tools over speculation for documentation/research.
 
-## 🚀 Development & Installation
+## Development & Installation
 
 ### Current Installation Method (v4.1.9)
 
@@ -274,30 +274,10 @@ make test
 make verify
 ```
 
-### Plugin System (Planned for v5.0 - NOT AVAILABLE)
-
-> **⚠️ IMPORTANT**: The plugin system described in older documentation **does not exist** in v4.1.9.
-> These features are planned for v5.0 (see [issue #419](https://github.com/SuperClaude-Org/SuperClaude_Framework/issues/419)).
-
-**What Does NOT Work** (yet):
-- ❌ `.claude-plugin/` directory auto-detection
-- ❌ `/plugin marketplace add` commands
-- ❌ `/plugin install superclaude`
-- ❌ `make build-plugin` (planned but not functional)
-- ❌ Project-local plugin detection
-
-**Future Plans** (v5.0):
-- Plugin marketplace distribution
-- TypeScript-based plugin architecture
-- Auto-detection via `.claude-plugin/plugin.json`
-- Build workflow via `make build-plugin`
-
-See `docs/plugin-reorg.md` and `docs/next-refactor-plan.md` for implementation plans.
-
-## 📊 Package Information
+## Package Information
 
 **Package name**: `superclaude`
-**Version**: 0.4.0
+**Version**: 4.1.9
 **Python**: >=3.10
 **Build system**: hatchling (PEP 517)
 
