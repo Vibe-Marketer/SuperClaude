@@ -253,5 +253,272 @@ def version():
     click.echo(f"SuperClaude version {__version__}")
 
 
+@main.command()
+@click.option(
+    "--project",
+    "-p",
+    default=".",
+    help="Project directory to configure (default: current directory)",
+)
+@click.option(
+    "--global",
+    "global_only",
+    is_flag=True,
+    help="Only add global MCP servers (run once, works everywhere)",
+)
+@click.option(
+    "--dry-run",
+    is_flag=True,
+    help="Show what would be configured without making changes",
+)
+def setup(project: str, global_only: bool, dry_run: bool):
+    """
+    Configure SuperClaude MCP servers for a project
+
+    WORKFLOW:
+    1. Run 'superclaude setup --global' ONCE (adds global MCPs)
+    2. Run 'superclaude setup' in each new project (adds Serena only)
+
+    Global MCPs (install once, work everywhere):
+    - context7-sse: Documentation lookup
+    - sequential-thinking: Structured reasoning
+    - tavily: Web search (requires TAVILY_API_KEY)
+
+    Project-specific (must run per-project):
+    - serena: Session memory for /sc:load and /sc:save
+
+    Examples:
+        superclaude setup --global           # One-time global setup
+        superclaude setup                    # Add Serena to current project
+        superclaude setup -p /path/to/project
+        superclaude setup --dry-run          # Preview changes
+    """
+    import json
+    import os
+
+    claude_config_path = Path.home() / ".claude.json"
+
+    # Load existing config
+    if claude_config_path.exists():
+        try:
+            with open(claude_config_path, "r") as f:
+                config = json.load(f)
+        except json.JSONDecodeError:
+            click.echo(f"❌ Invalid JSON in {claude_config_path}", err=True)
+            sys.exit(1)
+    else:
+        config = {}
+
+    changes_made = []
+
+    # Ensure root-level mcpServers exists
+    if "mcpServers" not in config:
+        config["mcpServers"] = {}
+
+    if global_only:
+        # GLOBAL SETUP MODE: Add all global MCPs to ALL editors
+        click.echo("🔧 SuperClaude Global Setup (All Editors)")
+        click.echo()
+
+        tavily_key = os.environ.get("TAVILY_API_KEY")
+        if not tavily_key:
+            click.echo("ℹ️  TAVILY_API_KEY not set - skipping Tavily MCP")
+            click.echo("   Set it and re-run to add web search capability")
+            click.echo()
+
+        # Define global servers for Claude Code format
+        claude_servers = {
+            "context7-sse": {
+                "type": "sse",
+                "url": "https://gitmcp.io/context7/mcp"
+            },
+            "sequential-thinking": {
+                "type": "stdio",
+                "command": "npx",
+                "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"],
+                "env": {}
+            },
+        }
+        if tavily_key:
+            claude_servers["tavily"] = {
+                "type": "stdio",
+                "command": "npx",
+                "args": ["-y", "tavily-mcp"],
+                "env": {"TAVILY_API_KEY": tavily_key}
+            }
+
+        # Define global servers for Cursor/Windsurf format (no "type" field)
+        cursor_servers = {
+            "sequential-thinking": {
+                "command": "npx",
+                "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"]
+            },
+        }
+        if tavily_key:
+            cursor_servers["tavily"] = {
+                "command": "npx",
+                "args": ["-y", "tavily-mcp"],
+                "env": {"TAVILY_API_KEY": tavily_key}
+            }
+
+        # 1. Configure Claude Code (~/.claude.json)
+        click.echo(f"📁 Claude Code: {claude_config_path}")
+        for server_name, server_config in claude_servers.items():
+            if server_name not in config["mcpServers"]:
+                config["mcpServers"][server_name] = server_config
+                changes_made.append(f"[Claude Code] Added: {server_name}")
+            else:
+                click.echo(f"   ✓ {server_name} already configured")
+
+        # 2. Configure Cursor (~/.cursor/mcp.json)
+        cursor_config_path = Path.home() / ".cursor" / "mcp.json"
+        if cursor_config_path.parent.exists():
+            click.echo(f"📁 Cursor: {cursor_config_path}")
+            cursor_config = {}
+            if cursor_config_path.exists():
+                try:
+                    with open(cursor_config_path, "r") as f:
+                        cursor_config = json.load(f)
+                except json.JSONDecodeError:
+                    click.echo(f"   ⚠️  Invalid JSON, will create fresh config")
+                    cursor_config = {}
+
+            if "mcpServers" not in cursor_config:
+                cursor_config["mcpServers"] = {}
+
+            cursor_changed = False
+            for server_name, server_config in cursor_servers.items():
+                if server_name not in cursor_config["mcpServers"]:
+                    cursor_config["mcpServers"][server_name] = server_config
+                    changes_made.append(f"[Cursor] Added: {server_name}")
+                    cursor_changed = True
+                else:
+                    click.echo(f"   ✓ {server_name} already configured")
+
+            if cursor_changed and not dry_run:
+                with open(cursor_config_path, "w") as f:
+                    json.dump(cursor_config, f, indent=2)
+
+        # 3. Configure Windsurf (~/.codeium/windsurf/mcp.json)
+        windsurf_config_path = Path.home() / ".codeium" / "windsurf" / "mcp.json"
+        if windsurf_config_path.parent.exists():
+            click.echo(f"📁 Windsurf: {windsurf_config_path}")
+            windsurf_config = {}
+            if windsurf_config_path.exists():
+                try:
+                    with open(windsurf_config_path, "r") as f:
+                        windsurf_config = json.load(f)
+                except json.JSONDecodeError:
+                    windsurf_config = {}
+
+            if "mcpServers" not in windsurf_config:
+                windsurf_config["mcpServers"] = {}
+
+            windsurf_changed = False
+            for server_name, server_config in cursor_servers.items():
+                if server_name not in windsurf_config["mcpServers"]:
+                    windsurf_config["mcpServers"][server_name] = server_config
+                    changes_made.append(f"[Windsurf] Added: {server_name}")
+                    windsurf_changed = True
+                else:
+                    click.echo(f"   ✓ {server_name} already configured")
+
+            if windsurf_changed and not dry_run:
+                windsurf_config_path.parent.mkdir(parents=True, exist_ok=True)
+                with open(windsurf_config_path, "w") as f:
+                    json.dump(windsurf_config, f, indent=2)
+
+    else:
+        # PROJECT SETUP MODE: Add only Serena for this project
+        project_path = Path(project).resolve()
+
+        if not project_path.exists():
+            click.echo(f"❌ Project path does not exist: {project_path}", err=True)
+            sys.exit(1)
+
+        click.echo("🔧 SuperClaude Project Setup")
+        click.echo(f"   Project: {project_path}")
+        click.echo(f"   Config:  {claude_config_path}")
+        click.echo()
+
+        # Check if global MCPs are configured
+        has_global = "sequential-thinking" in config.get("mcpServers", {})
+        if not has_global:
+            click.echo("⚠️  Global MCPs not configured!")
+            click.echo("   Run 'superclaude setup --global' first for best experience.")
+            click.echo()
+
+        # Ensure projects dict exists
+        if "projects" not in config:
+            config["projects"] = {}
+
+        project_key = str(project_path)
+
+        # Ensure project entry exists
+        if project_key not in config["projects"]:
+            config["projects"][project_key] = {
+                "allowedTools": [],
+                "mcpContextUris": [],
+                "mcpServers": {},
+                "hasTrustDialogAccepted": True,
+            }
+            changes_made.append(f"Created project entry")
+
+        # Ensure project mcpServers exists
+        if "mcpServers" not in config["projects"][project_key]:
+            config["projects"][project_key]["mcpServers"] = {}
+
+        project_mcps = config["projects"][project_key]["mcpServers"]
+
+        # Add ONLY Serena for this specific project
+        if "serena" not in project_mcps:
+            project_mcps["serena"] = {
+                "type": "stdio",
+                "command": "uvx",
+                "args": [
+                    "--from",
+                    "git+https://github.com/oraios/serena",
+                    "serena",
+                    "start-mcp-server",
+                    "--context",
+                    "ide-assistant",
+                    "--project",
+                    str(project_path)
+                ],
+                "env": {}
+            }
+            changes_made.append(f"Added Serena MCP for session memory")
+        else:
+            click.echo("   ✓ Serena already configured for this project")
+
+    # Report changes
+    if not changes_made:
+        click.echo("✅ Already configured! No changes needed.")
+        return
+
+    click.echo("📝 Changes:")
+    for change in changes_made:
+        click.echo(f"   • {change}")
+    click.echo()
+
+    if dry_run:
+        click.echo("[DRY RUN] No changes written.")
+        return
+
+    # Write config
+    try:
+        with open(claude_config_path, "w") as f:
+            json.dump(config, f, indent=2)
+        click.echo(f"✅ Configuration saved!")
+        click.echo()
+        click.echo("⚠️  Restart Claude Code for changes to take effect!")
+        if not global_only:
+            click.echo()
+            click.echo("After restart, run /sc:load to initialize session memory.")
+    except Exception as e:
+        click.echo(f"❌ Failed to write config: {e}", err=True)
+        sys.exit(1)
+
+
 if __name__ == "__main__":
     main()
