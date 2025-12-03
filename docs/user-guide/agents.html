@@ -1,0 +1,1005 @@
+<span id="markdown-mermaid" aria-hidden="true"
+                    data-dark-mode-theme="dark"
+                    data-light-mode-theme="default"
+                    data-max-text-size="50000"></span>
+                <h1 id="superclaude-agents-guide-">SuperClaude Agents Guide 🤖</h1>
+<p>SuperClaude provides 16 domain specialist agents that Claude Code can invoke for specialized expertise.</p>
+<h2 id="-testing-agent-activation">🧪 Testing Agent Activation</h2>
+<p>Before using this guide, verify agent selection works:</p>
+<pre><code class="language-bash"><span class="hljs-comment"># Test manual agent invocation</span>
+@agent-python-expert <span class="hljs-string">&quot;explain decorators&quot;</span>
+<span class="hljs-comment"># Example behavior: Python expert responds with detailed explanation</span>
+
+<span class="hljs-comment"># Test security agent auto-activation</span>
+/sc:implement <span class="hljs-string">&quot;JWT authentication&quot;</span>
+<span class="hljs-comment"># Example behavior: Security engineer should activate automatically</span>
+
+<span class="hljs-comment"># Test frontend agent auto-activation</span>
+/sc:implement <span class="hljs-string">&quot;responsive navigation component&quot;</span>  
+<span class="hljs-comment"># Example behavior: Frontend architect + Magic MCP should activate</span>
+
+<span class="hljs-comment"># Test systematic analysis</span>
+/sc:troubleshoot <span class="hljs-string">&quot;slow API performance&quot;</span>
+<span class="hljs-comment"># Example behavior: Root-cause analyst + performance engineer activation</span>
+
+<span class="hljs-comment"># Test combining manual and auto</span>
+/sc:analyze src/
+@agent-refactoring-expert <span class="hljs-string">&quot;suggest improvements&quot;</span>
+<span class="hljs-comment"># Example behavior: Analysis followed by refactoring suggestions</span>
+</code></pre>
+<p><strong>If tests fail</strong>: Check agent files exist in <code>~/.claude/agents/</code> or restart Claude Code session</p>
+<h2 id="core-concepts">Core Concepts</h2>
+<h3 id="what-are-superclaude-agents">What are SuperClaude Agents?</h3>
+<p><strong>Agents</strong> are specialized AI domain experts implemented as context instructions that modify Claude Code's behavior. Each agent is a carefully crafted <code>.md</code> file in the <code>superclaude/Agents/</code> directory containing domain-specific expertise, behavioral patterns, and problem-solving approaches.</p>
+<p><strong>Important</strong>: Agents are NOT separate AI models or software - they are context configurations that Claude Code reads to adopt specialized behaviors.</p>
+<h3 id="two-ways-to-use-agents">Two Ways to Use Agents</h3>
+<h4 id="1-manual-invocation-with-agent--prefix">1. Manual Invocation with @agent- Prefix</h4>
+<pre><code class="language-bash"><span class="hljs-comment"># Directly invoke a specific agent</span>
+@agent-security <span class="hljs-string">&quot;review authentication implementation&quot;</span>
+@agent-frontend <span class="hljs-string">&quot;design responsive navigation&quot;</span>
+@agent-architect <span class="hljs-string">&quot;plan microservices migration&quot;</span>
+</code></pre>
+<h4 id="2-auto-activation-behavioral-routing">2. Auto-Activation (Behavioral Routing)</h4>
+<p>&quot;Auto-activation&quot; means Claude Code reads behavioral instructions to engage appropriate contexts based on keywords and patterns in your requests. SuperClaude provides behavioral guidelines that Claude follows to route to the most appropriate specialists.</p>
+<blockquote>
+<p><strong>📝 How Agent &quot;Auto-Activation&quot; Works</strong>:
+Agent activation isn't automatic system logic - it's behavioral instructions in context files.
+When documentation says agents &quot;auto-activate&quot;, it means Claude Code reads instructions to engage
+specific domain expertise based on keywords and patterns in your request. This creates the
+experience of intelligent routing while being transparent about the underlying mechanism.</p>
+</blockquote>
+<pre><code class="language-bash"><span class="hljs-comment"># These commands auto-activate relevant agents</span>
+/sc:implement <span class="hljs-string">&quot;JWT authentication&quot;</span>  <span class="hljs-comment"># → security-engineer auto-activates</span>
+/sc:design <span class="hljs-string">&quot;React dashboard&quot;</span>        <span class="hljs-comment"># → frontend-architect auto-activates</span>
+/sc:troubleshoot <span class="hljs-string">&quot;memory leak&quot;</span>      <span class="hljs-comment"># → performance-engineer auto-activates</span>
+</code></pre>
+<p><strong>MCP Servers</strong> provide enhanced capabilities through specialized tools like Context7 (documentation), Sequential (analysis), Magic (UI), Playwright (testing), and Morphllm (code transformation).</p>
+<p><strong>Domain Specialists</strong> focus on narrow expertise areas to provide deeper, more accurate solutions than generalist approaches.</p>
+<h3 id="agent-selection-rules">Agent Selection Rules</h3>
+<p><strong>Priority Hierarchy:</strong></p>
+<ol>
+<li><strong>Manual Override</strong> - @agent-[name] takes precedence over auto-activation</li>
+<li><strong>Keywords</strong> - Direct domain terminology triggers primary agents</li>
+<li><strong>File Types</strong> - Extensions activate language/framework specialists</li>
+<li><strong>Complexity</strong> - Multi-step tasks engage coordination agents</li>
+<li><strong>Context</strong> - Related concepts trigger complementary agents</li>
+</ol>
+<p><strong>Conflict Resolution:</strong></p>
+<ul>
+<li>Manual invocation → Specified agent takes priority</li>
+<li>Multiple matches → Multi-agent coordination</li>
+<li>Unclear context → Requirements analyst activation</li>
+<li>High complexity → System architect oversight</li>
+<li>Quality concerns → Automatic QA agent inclusion</li>
+</ul>
+<p><strong>Selection Decision Tree:</strong></p>
+<pre><code>Task Analysis →
+├─ Manual @agent-? → Use specified agent
+├─ Single Domain? → Activate primary agent
+├─ Multi-Domain? → Coordinate specialist agents  
+├─ Complex System? → Add system-architect oversight
+├─ Quality Critical? → Include security + performance + quality agents
+└─ Learning Focus? → Add learning-guide + technical-writer
+</code></pre>
+<h2 id="quick-start-examples">Quick Start Examples</h2>
+<h3 id="manual-agent-invocation">Manual Agent Invocation</h3>
+<pre><code class="language-bash"><span class="hljs-comment"># Explicitly call specific agents with @agent- prefix</span>
+@agent-python-expert <span class="hljs-string">&quot;optimize this data processing pipeline&quot;</span>
+@agent-quality-engineer <span class="hljs-string">&quot;create comprehensive test suite&quot;</span>
+@agent-technical-writer <span class="hljs-string">&quot;document this API with examples&quot;</span>
+@agent-socratic-mentor <span class="hljs-string">&quot;explain this design pattern&quot;</span>
+</code></pre>
+<h3 id="automatic-agent-coordination">Automatic Agent Coordination</h3>
+<pre><code class="language-bash"><span class="hljs-comment"># Commands that trigger auto-activation</span>
+/sc:implement <span class="hljs-string">&quot;JWT authentication with rate limiting&quot;</span>
+<span class="hljs-comment"># → Triggers: security-engineer + backend-architect + quality-engineer</span>
+
+/sc:design <span class="hljs-string">&quot;accessible React dashboard with documentation&quot;</span>
+<span class="hljs-comment"># → Triggers: frontend-architect + learning-guide + technical-writer  </span>
+
+/sc:troubleshoot <span class="hljs-string">&quot;slow deployment pipeline with intermittent failures&quot;</span>
+<span class="hljs-comment"># → Triggers: devops-architect + performance-engineer + root-cause-analyst</span>
+
+/sc:audit <span class="hljs-string">&quot;payment processing security vulnerabilities&quot;</span>
+<span class="hljs-comment"># → Triggers: security-engineer + quality-engineer + refactoring-expert</span>
+</code></pre>
+<h3 id="combining-manual-and-auto-approaches">Combining Manual and Auto Approaches</h3>
+<pre><code class="language-bash"><span class="hljs-comment"># Start with command (auto-activation)</span>
+/sc:implement <span class="hljs-string">&quot;user profile system&quot;</span>
+
+<span class="hljs-comment"># Then explicitly add specialist review</span>
+@agent-security <span class="hljs-string">&quot;review the profile system for OWASP compliance&quot;</span>
+@agent-performance-engineer <span class="hljs-string">&quot;optimize database queries&quot;</span>
+</code></pre>
+<hr>
+<h2 id="the-superclaude-agent-team-">The SuperClaude Agent Team 👥</h2>
+<h3 id="meta-layer-agent-">Meta-Layer Agent 🎯</h3>
+<h3 id="pm-agent-">pm-agent 📚</h3>
+<p><strong>Expertise</strong>: Self-improvement workflow executor that documents implementations, analyzes mistakes, and maintains knowledge base continuously</p>
+<p><strong>Auto-Activation</strong>:</p>
+<ul>
+<li><strong>Post-Implementation</strong>: After any task completion requiring documentation</li>
+<li><strong>Mistake Detection</strong>: Immediate analysis when errors or bugs occur</li>
+<li><strong>Monthly Maintenance</strong>: Regular documentation health reviews</li>
+<li><strong>Knowledge Gap</strong>: When patterns emerge requiring documentation</li>
+<li>Commands: Automatically activates after <code>/sc:implement</code>, <code>/sc:build</code>, <code>/sc:improve</code> completions</li>
+</ul>
+<p><strong>Capabilities</strong>:</p>
+<ul>
+<li><strong>Implementation Documentation</strong>: Record new patterns, architectural decisions, edge cases discovered</li>
+<li><strong>Mistake Analysis</strong>: Root cause analysis, prevention checklists, pattern identification</li>
+<li><strong>Pattern Recognition</strong>: Extract success patterns, anti-patterns, best practices</li>
+<li><strong>Knowledge Maintenance</strong>: Monthly reviews, noise reduction, duplication merging, freshness updates</li>
+<li><strong>Self-Improvement Loop</strong>: Transform every experience into reusable knowledge</li>
+</ul>
+<p><strong>How PM Agent Works</strong> (Meta-Layer):</p>
+<ol>
+<li><strong>Specialist Agents Complete Task</strong>: Backend-architect implements feature</li>
+<li><strong>PM Agent Auto-Activates</strong>: After implementation completion</li>
+<li><strong>Documentation</strong>: Records patterns, decisions, edge cases in docs/</li>
+<li><strong>Knowledge Update</strong>: Updates <a href="http://CLAUDE.html">CLAUDE.md</a> if global pattern discovered</li>
+<li><strong>Evidence Collection</strong>: Links test results, screenshots, metrics</li>
+<li><strong>Learning Integration</strong>: Extracts lessons for future implementations</li>
+</ol>
+<p><strong>Self-Improvement Workflow Examples</strong>:</p>
+<ol>
+<li>
+<p><strong>Post-Implementation Documentation</strong>:</p>
+<ul>
+<li>Scenario: Backend architect just implemented JWT authentication</li>
+<li>PM Agent: Analyzes implementation → Documents JWT pattern → Updates docs/authentication.md → Records security decisions → Creates evidence links</li>
+<li>Output: Comprehensive authentication pattern documentation for future reuse</li>
+</ul>
+</li>
+<li>
+<p><strong>Immediate Mistake Analysis</strong>:</p>
+<ul>
+<li>Scenario: Direct Supabase import used (Kong Gateway bypassed)</li>
+<li>PM Agent: Stops implementation → Root cause analysis → Documents in <a href="http://self-improvement-workflow.html">self-improvement-workflow.md</a> → Creates prevention checklist → Updates <a href="http://CLAUDE.html">CLAUDE.md</a></li>
+<li>Output: Mistake recorded with prevention strategy, won't repeat error</li>
+</ul>
+</li>
+<li>
+<p><strong>Monthly Documentation Maintenance</strong>:</p>
+<ul>
+<li>Scenario: Monthly review on 1st of month</li>
+<li>PM Agent: Reviews docs older than 6 months → Deletes unused documents → Merges duplicates → Updates version numbers → Reduces verbosity</li>
+<li>Output: Fresh, minimal, high-signal documentation maintained</li>
+</ul>
+</li>
+</ol>
+<p><strong>Integration with Task Execution</strong>:
+PM Agent operates as a <strong>meta-layer</strong> above specialist agents:</p>
+<pre><code>Task Flow:
+1. User Request → Auto-activation selects specialist agent
+2. Specialist Agent → Executes implementation (backend-architect, frontend-architect, etc.)
+3. PM Agent (Auto-triggered) → Documents learnings
+4. Knowledge Base → Updated with patterns, mistakes, improvements
+</code></pre>
+<p><strong>Works Best With</strong>: All agents (documents their work, not replaces them)</p>
+<p><strong>Quality Standards</strong>:</p>
+<ul>
+<li><strong>Latest</strong>: Last Verified dates on all documents</li>
+<li><strong>Minimal</strong>: Necessary information only, no verbosity</li>
+<li><strong>Clear</strong>: Concrete examples and copy-paste ready code</li>
+<li><strong>Practical</strong>: Immediately applicable to real work</li>
+</ul>
+<p><strong>Self-Improvement Loop Phases</strong>:</p>
+<ul>
+<li><strong>AFTER Phase</strong>: Primary responsibility - document implementations, update docs/, create evidence</li>
+<li><strong>MISTAKE RECOVERY</strong>: Immediate stop, root cause analysis, documentation update</li>
+<li><strong>MAINTENANCE</strong>: Monthly pruning, merging, freshness updates, noise reduction</li>
+</ul>
+<p><strong>Verify</strong>: Activates automatically after task completions requiring documentation
+<strong>Test</strong>: Should document patterns after backend-architect implements features
+<strong>Check</strong>: Should create prevention checklists when mistakes detected</p>
+<hr>
+<h3 id="architecture--system-design-agents-️">Architecture &amp; System Design Agents 🏗️</h3>
+<h3 id="system-architect-">system-architect 🏢</h3>
+<p><strong>Expertise</strong>: Large-scale distributed system design with focus on scalability and service architecture</p>
+<p><strong>Auto-Activation</strong>:</p>
+<ul>
+<li>Keywords: &quot;architecture&quot;, &quot;microservices&quot;, &quot;scalability&quot;, &quot;system design&quot;, &quot;distributed&quot;</li>
+<li>Context: Multi-service systems, architectural decisions, technology selection</li>
+<li>Complexity: &gt;5 components or cross-domain integration requirements</li>
+</ul>
+<p><strong>Capabilities</strong>:</p>
+<ul>
+<li>Service boundary definition and microservices decomposition</li>
+<li>Technology stack selection and integration strategy</li>
+<li>Scalability planning and performance architecture</li>
+<li>Event-driven architecture and messaging patterns</li>
+<li>Data flow design and system integration</li>
+</ul>
+<p><strong>Examples</strong>:</p>
+<ol>
+<li><strong>E-commerce Platform</strong>: Design microservices for user, product, payment, and notification services with event sourcing</li>
+<li><strong>Real-time Analytics</strong>: Architecture for high-throughput data ingestion with stream processing and time-series storage</li>
+<li><strong>Multi-tenant SaaS</strong>: System design with tenant isolation, shared infrastructure, and horizontal scaling strategies</li>
+</ol>
+<h3 id="success-criteria">Success Criteria</h3>
+<ul class="contains-task-list">
+<li class="task-list-item enabled"><input class="task-list-item-checkbox"type="checkbox"> System-level thinking evident in responses</li>
+<li class="task-list-item enabled"><input class="task-list-item-checkbox"type="checkbox"> Mentions service boundaries and integration patterns</li>
+<li class="task-list-item enabled"><input class="task-list-item-checkbox"type="checkbox"> Includes scalability and reliability considerations</li>
+<li class="task-list-item enabled"><input class="task-list-item-checkbox"type="checkbox"> Provides technology stack recommendations</li>
+</ul>
+<p><strong>Verify:</strong> <code>/sc:design &quot;microservices platform&quot;</code> should activate system-architect<br>
+<strong>Test:</strong> Output should include service decomposition and integration patterns<br>
+<strong>Check:</strong> Should coordinate with devops-architect for infrastructure concerns</p>
+<p><strong>Works Best With</strong>: devops-architect (infrastructure), performance-engineer (optimization), security-engineer (compliance)</p>
+<hr>
+<h3 id="backend-architect-️">backend-architect ⚙️</h3>
+<p><strong>Expertise</strong>: Robust server-side system design with emphasis on API reliability and data integrity</p>
+<p><strong>Auto-Activation</strong>:</p>
+<ul>
+<li>Keywords: &quot;API&quot;, &quot;backend&quot;, &quot;server&quot;, &quot;database&quot;, &quot;REST&quot;, &quot;GraphQL&quot;, &quot;endpoint&quot;</li>
+<li>File Types: API specs, server configs, database schemas</li>
+<li>Context: Server-side logic, data persistence, API development</li>
+</ul>
+<p><strong>Capabilities</strong>:</p>
+<ul>
+<li>RESTful and GraphQL API architecture and design patterns</li>
+<li>Database schema design and query optimization strategies</li>
+<li>Authentication, authorization, and security implementation</li>
+<li>Error handling, logging, and monitoring integration</li>
+<li>Caching strategies and performance optimization</li>
+</ul>
+<p><strong>Examples</strong>:</p>
+<ol>
+<li><strong>User Management API</strong>: JWT authentication with role-based access control and rate limiting</li>
+<li><strong>Payment Processing</strong>: PCI-compliant transaction handling with idempotency and audit trails</li>
+<li><strong>Content Management</strong>: RESTful APIs with caching, pagination, and real-time notifications</li>
+</ol>
+<p><strong>Works Best With</strong>: security-engineer (auth/security), performance-engineer (optimization), quality-engineer (testing)</p>
+<hr>
+<h3 id="frontend-architect-">frontend-architect 🎨</h3>
+<p><strong>Expertise</strong>: Modern web application architecture with focus on accessibility and user experience</p>
+<p><strong>Auto-Activation</strong>:</p>
+<ul>
+<li>Keywords: &quot;UI&quot;, &quot;frontend&quot;, &quot;React&quot;, &quot;Vue&quot;, &quot;Angular&quot;, &quot;component&quot;, &quot;accessibility&quot;, &quot;responsive&quot;</li>
+<li>File Types: .jsx, .vue, .ts (frontend), .css, .scss</li>
+<li>Context: User interface development, component design, client-side architecture</li>
+</ul>
+<p><strong>Capabilities</strong>:</p>
+<ul>
+<li>Component architecture and design system implementation</li>
+<li>State management patterns (Redux, Zustand, Pinia)</li>
+<li>Accessibility compliance (WCAG 2.1) and inclusive design</li>
+<li>Performance optimization and bundle analysis</li>
+<li>Progressive Web App and mobile-first development</li>
+</ul>
+<p><strong>Examples</strong>:</p>
+<ol>
+<li><strong>Dashboard Interface</strong>: Accessible data visualization with real-time updates and responsive grid layout</li>
+<li><strong>Form Systems</strong>: Complex multi-step forms with validation, error handling, and accessibility features</li>
+<li><strong>Design System</strong>: Reusable component library with consistent styling and interaction patterns</li>
+</ol>
+<p><strong>Works Best With</strong>: learning-guide (user guidance), performance-engineer (optimization), quality-engineer (testing)</p>
+<hr>
+<h3 id="devops-architect-">devops-architect 🚀</h3>
+<p><strong>Expertise</strong>: Infrastructure automation and deployment pipeline design for reliable software delivery</p>
+<p><strong>Auto-Activation</strong>:</p>
+<ul>
+<li>Keywords: &quot;deploy&quot;, &quot;CI/CD&quot;, &quot;Docker&quot;, &quot;Kubernetes&quot;, &quot;infrastructure&quot;, &quot;monitoring&quot;, &quot;pipeline&quot;</li>
+<li>File Types: Dockerfile, docker-compose.yml, k8s manifests, CI configs</li>
+<li>Context: Deployment processes, infrastructure management, automation</li>
+</ul>
+<p><strong>Capabilities</strong>:</p>
+<ul>
+<li>CI/CD pipeline design with automated testing and deployment</li>
+<li>Container orchestration and Kubernetes cluster management</li>
+<li>Infrastructure as Code with Terraform and cloud platforms</li>
+<li>Monitoring, logging, and observability stack implementation</li>
+<li>Security scanning and compliance automation</li>
+</ul>
+<p><strong>Examples</strong>:</p>
+<ol>
+<li><strong>Microservices Deployment</strong>: Kubernetes deployment with service mesh, auto-scaling, and blue-green releases</li>
+<li><strong>Multi-Environment Pipeline</strong>: GitOps workflow with automated testing, security scanning, and staged deployments</li>
+<li><strong>Monitoring Stack</strong>: Comprehensive observability with metrics, logs, traces, and alerting systems</li>
+</ol>
+<p><strong>Works Best With</strong>: system-architect (infrastructure planning), security-engineer (compliance), performance-engineer (monitoring)</p>
+<hr>
+<h3 id="deep-research-agent-">deep-research-agent 🔬</h3>
+<p><strong>Expertise</strong>: Comprehensive research with adaptive strategies and multi-hop reasoning</p>
+<p><strong>Auto-Activation</strong>:</p>
+<ul>
+<li>Keywords: &quot;research&quot;, &quot;investigate&quot;, &quot;discover&quot;, &quot;explore&quot;, &quot;find out&quot;, &quot;search for&quot;, &quot;latest&quot;, &quot;current&quot;</li>
+<li>Commands: <code>/sc:research</code> automatically activates this agent</li>
+<li>Context: Complex queries requiring thorough research, current information needs, fact-checking</li>
+<li>Complexity: Questions spanning multiple domains or requiring iterative exploration</li>
+</ul>
+<p><strong>Capabilities</strong>:</p>
+<ul>
+<li><strong>Adaptive Planning Strategies</strong>: Planning (direct), Intent (clarify first), Unified (collaborative)</li>
+<li><strong>Multi-Hop Reasoning</strong>: Up to 5 levels - entity expansion, temporal progression, conceptual deepening, causal chains</li>
+<li><strong>Self-Reflective Mechanisms</strong>: Progress assessment after each major step with replanning triggers</li>
+<li><strong>Evidence Management</strong>: Clear citations, relevance scoring, uncertainty acknowledgment</li>
+<li><strong>Tool Orchestration</strong>: Parallel-first execution with Tavily (search), Playwright (JavaScript content), Sequential (reasoning)</li>
+<li><strong>Learning Integration</strong>: Pattern recognition and strategy reuse via Serena memory</li>
+</ul>
+<p><strong>Research Depth Levels</strong>:</p>
+<ul>
+<li><strong>Quick</strong>: Basic search, 1 hop, summary output</li>
+<li><strong>Standard</strong>: Extended search, 2-3 hops, structured report (default)</li>
+<li><strong>Deep</strong>: Comprehensive search, 3-4 hops, detailed analysis</li>
+<li><strong>Exhaustive</strong>: Maximum depth, 5 hops, complete investigation</li>
+</ul>
+<p><strong>Examples</strong>:</p>
+<ol>
+<li><strong>Technical Research</strong>: <code>/sc:research &quot;latest React Server Components patterns&quot;</code> → Comprehensive technical research with implementation examples</li>
+<li><strong>Market Analysis</strong>: <code>/sc:research &quot;AI coding assistants landscape 2024&quot; --strategy unified</code> → Collaborative analysis with user input</li>
+<li><strong>Academic Investigation</strong>: <code>/sc:research &quot;quantum computing breakthroughs&quot; --depth exhaustive</code> → Comprehensive literature review with evidence chains</li>
+</ol>
+<p><strong>Workflow Pattern</strong> (6-Phase):</p>
+<ol>
+<li><strong>Understand</strong> (5-10%): Assess query complexity</li>
+<li><strong>Plan</strong> (10-15%): Select strategy and identify parallel opportunities</li>
+<li><strong>TodoWrite</strong> (5%): Create adaptive task hierarchy (3-15 tasks)</li>
+<li><strong>Execute</strong> (50-60%): Parallel searches and extractions</li>
+<li><strong>Track</strong> (Continuous): Monitor progress and confidence</li>
+<li><strong>Validate</strong> (10-15%): Verify evidence chains</li>
+</ol>
+<p><strong>Output</strong>: Reports saved to <code>docs/research/[topic]_[timestamp].md</code></p>
+<p><strong>Works Best With</strong>: system-architect (technical research), learning-guide (educational research), requirements-analyst (market research)</p>
+<h3 id="quality--analysis-agents-">Quality &amp; Analysis Agents 🔍</h3>
+<h3 id="security-engineer-">security-engineer 🔒</h3>
+<p><strong>Expertise</strong>: Application security architecture with focus on threat modeling and vulnerability prevention</p>
+<p><strong>Auto-Activation</strong>:</p>
+<ul>
+<li>Keywords: &quot;security&quot;, &quot;auth&quot;, &quot;authentication&quot;, &quot;vulnerability&quot;, &quot;encryption&quot;, &quot;compliance&quot;, &quot;OWASP&quot;</li>
+<li>Context: Security reviews, authentication flows, data protection requirements</li>
+<li>Risk Indicators: Payment processing, user data, API access, regulatory compliance needs</li>
+</ul>
+<p><strong>Capabilities</strong>:</p>
+<ul>
+<li>Threat modeling and attack surface analysis</li>
+<li>Secure authentication and authorization design (OAuth, JWT, SAML)</li>
+<li>Data encryption strategies and key management</li>
+<li>Vulnerability assessment and penetration testing guidance</li>
+<li>Security compliance (GDPR, HIPAA, PCI-DSS) implementation</li>
+</ul>
+<p><strong>Examples</strong>:</p>
+<ol>
+<li><strong>OAuth Implementation</strong>: Secure multi-tenant authentication with token refresh and role-based access</li>
+<li><strong>API Security</strong>: Rate limiting, input validation, SQL injection prevention, and security headers</li>
+<li><strong>Data Protection</strong>: Encryption at rest/transit, key rotation, and privacy-by-design architecture</li>
+</ol>
+<p><strong>Works Best With</strong>: backend-architect (API security), quality-engineer (security testing), root-cause-analyst (incident response)</p>
+<hr>
+<h3 id="performance-engineer-">performance-engineer ⚡</h3>
+<p><strong>Expertise</strong>: System performance optimization with focus on scalability and resource efficiency</p>
+<p><strong>Auto-Activation</strong>:</p>
+<ul>
+<li>Keywords: &quot;performance&quot;, &quot;slow&quot;, &quot;optimization&quot;, &quot;bottleneck&quot;, &quot;latency&quot;, &quot;memory&quot;, &quot;CPU&quot;</li>
+<li>Context: Performance issues, scalability concerns, resource constraints</li>
+<li>Metrics: Response times &gt;500ms, high memory usage, poor throughput</li>
+</ul>
+<p><strong>Capabilities</strong>:</p>
+<ul>
+<li>Performance profiling and bottleneck identification</li>
+<li>Database query optimization and indexing strategies</li>
+<li>Caching implementation (Redis, CDN, application-level)</li>
+<li>Load testing and capacity planning</li>
+<li>Memory management and resource optimization</li>
+</ul>
+<p><strong>Examples</strong>:</p>
+<ol>
+<li><strong>API Optimization</strong>: Reduce response time from 2s to 200ms through caching and query optimization</li>
+<li><strong>Database Scaling</strong>: Implement read replicas, connection pooling, and query result caching</li>
+<li><strong>Frontend Performance</strong>: Bundle optimization, lazy loading, and CDN implementation for &lt;3s load times</li>
+</ol>
+<p><strong>Works Best With</strong>: system-architect (scalability), devops-architect (infrastructure), root-cause-analyst (debugging)</p>
+<hr>
+<h3 id="root-cause-analyst-">root-cause-analyst 🔍</h3>
+<p><strong>Expertise</strong>: Systematic problem investigation using evidence-based analysis and hypothesis testing</p>
+<p><strong>Auto-Activation</strong>:</p>
+<ul>
+<li>Keywords: &quot;bug&quot;, &quot;issue&quot;, &quot;problem&quot;, &quot;debugging&quot;, &quot;investigation&quot;, &quot;troubleshoot&quot;, &quot;error&quot;</li>
+<li>Context: System failures, unexpected behavior, complex multi-component issues</li>
+<li>Complexity: Cross-system problems requiring methodical investigation</li>
+</ul>
+<p><strong>Capabilities</strong>:</p>
+<ul>
+<li>Systematic debugging methodology and root cause analysis</li>
+<li>Error correlation and dependency mapping across systems</li>
+<li>Log analysis and pattern recognition for failure investigation</li>
+<li>Hypothesis formation and testing for complex problems</li>
+<li>Incident response and post-mortem analysis procedures</li>
+</ul>
+<p><strong>Examples</strong>:</p>
+<ol>
+<li><strong>Database Connection Failures</strong>: Trace intermittent failures across connection pools, network timeouts, and resource limits</li>
+<li><strong>Payment Processing Errors</strong>: Investigate transaction failures through API logs, database states, and external service responses</li>
+<li><strong>Performance Degradation</strong>: Analyze gradual slowdown through metrics correlation, resource usage, and code changes</li>
+</ol>
+<p><strong>Works Best With</strong>: performance-engineer (performance issues), security-engineer (security incidents), quality-engineer (testing failures)</p>
+<hr>
+<h3 id="quality-engineer-">quality-engineer ✅</h3>
+<p><strong>Expertise</strong>: Comprehensive testing strategy and quality assurance with focus on automation and coverage</p>
+<p><strong>Auto-Activation</strong>:</p>
+<ul>
+<li>Keywords: &quot;test&quot;, &quot;testing&quot;, &quot;quality&quot;, &quot;QA&quot;, &quot;validation&quot;, &quot;coverage&quot;, &quot;automation&quot;</li>
+<li>Context: Test planning, quality gates, validation requirements</li>
+<li>Quality Concerns: Code coverage &lt;80%, missing test automation, quality issues</li>
+</ul>
+<p><strong>Capabilities</strong>:</p>
+<ul>
+<li>Test strategy design (unit, integration, e2e, performance testing)</li>
+<li>Test automation framework implementation and CI/CD integration</li>
+<li>Quality metrics definition and monitoring (coverage, defect rates)</li>
+<li>Edge case identification and boundary testing scenarios</li>
+<li>Accessibility testing and compliance validation</li>
+</ul>
+<p><strong>Examples</strong>:</p>
+<ol>
+<li><strong>E-commerce Testing</strong>: Comprehensive test suite covering user flows, payment processing, and inventory management</li>
+<li><strong>API Testing</strong>: Automated contract testing, load testing, and security testing for REST/GraphQL APIs</li>
+<li><strong>Accessibility Validation</strong>: WCAG 2.1 compliance testing with automated and manual accessibility audits</li>
+</ol>
+<p><strong>Works Best With</strong>: security-engineer (security testing), performance-engineer (load testing), frontend-architect (UI testing)</p>
+<hr>
+<h3 id="refactoring-expert-">refactoring-expert 🔧</h3>
+<p><strong>Expertise</strong>: Code quality improvement through systematic refactoring and technical debt management</p>
+<p><strong>Auto-Activation</strong>:</p>
+<ul>
+<li>Keywords: &quot;refactor&quot;, &quot;clean code&quot;, &quot;technical debt&quot;, &quot;SOLID&quot;, &quot;maintainability&quot;, &quot;code smell&quot;</li>
+<li>Context: Legacy code improvements, architecture updates, code quality issues</li>
+<li>Quality Indicators: High complexity, duplicated code, poor test coverage</li>
+</ul>
+<p><strong>Capabilities</strong>:</p>
+<ul>
+<li>SOLID principles application and design pattern implementation</li>
+<li>Code smell identification and systematic elimination</li>
+<li>Legacy code modernization strategies and migration planning</li>
+<li>Technical debt assessment and prioritization frameworks</li>
+<li>Code structure improvement and architecture refactoring</li>
+</ul>
+<p><strong>Examples</strong>:</p>
+<ol>
+<li><strong>Legacy Modernization</strong>: Transform monolithic application to modular architecture with improved testability</li>
+<li><strong>Design Patterns</strong>: Implement Strategy pattern for payment processing to reduce coupling and improve extensibility</li>
+<li><strong>Code Cleanup</strong>: Remove duplicated code, improve naming conventions, and extract reusable components</li>
+</ol>
+<p><strong>Works Best With</strong>: system-architect (architecture improvements), quality-engineer (testing strategy), python-expert (language-specific patterns)</p>
+<h3 id="specialized-development-agents-">Specialized Development Agents 🎯</h3>
+<h3 id="python-expert-">python-expert 🐍</h3>
+<p><strong>Expertise</strong>: Production-ready Python development with emphasis on modern frameworks and performance</p>
+<p><strong>Auto-Activation</strong>:</p>
+<ul>
+<li>Keywords: &quot;Python&quot;, &quot;Django&quot;, &quot;FastAPI&quot;, &quot;Flask&quot;, &quot;asyncio&quot;, &quot;pandas&quot;, &quot;pytest&quot;</li>
+<li>File Types: .py, requirements.txt, pyproject.toml, Pipfile</li>
+<li>Context: Python development tasks, API development, data processing, testing</li>
+</ul>
+<p><strong>Capabilities</strong>:</p>
+<ul>
+<li>Modern Python architecture patterns and framework selection</li>
+<li>Asynchronous programming with asyncio and concurrent futures</li>
+<li>Performance optimization through profiling and algorithmic improvements</li>
+<li>Testing strategies with pytest, fixtures, and test automation</li>
+<li>Package management and deployment with pip, poetry, and Docker</li>
+</ul>
+<p><strong>Examples</strong>:</p>
+<ol>
+<li><strong>FastAPI Microservice</strong>: High-performance async API with Pydantic validation, dependency injection, and OpenAPI docs</li>
+<li><strong>Data Pipeline</strong>: Pandas-based ETL with error handling, logging, and parallel processing for large datasets</li>
+<li><strong>Django Application</strong>: Full-stack web app with custom user models, API endpoints, and comprehensive test coverage</li>
+</ol>
+<p><strong>Works Best With</strong>: backend-architect (API design), quality-engineer (testing), performance-engineer (optimization)</p>
+<hr>
+<h3 id="requirements-analyst-">requirements-analyst 📝</h3>
+<p><strong>Expertise</strong>: Requirements discovery and specification development through systematic stakeholder analysis</p>
+<p><strong>Auto-Activation</strong>:</p>
+<ul>
+<li>Keywords: &quot;requirements&quot;, &quot;specification&quot;, &quot;PRD&quot;, &quot;user story&quot;, &quot;functional&quot;, &quot;scope&quot;, &quot;stakeholder&quot;</li>
+<li>Context: Project initiation, unclear requirements, scope definition needs</li>
+<li>Complexity: Multi-stakeholder projects, unclear objectives, conflicting requirements</li>
+</ul>
+<p><strong>Capabilities</strong>:</p>
+<ul>
+<li>Requirements elicitation through stakeholder interviews and workshops</li>
+<li>User story writing with acceptance criteria and definition of done</li>
+<li>Functional and non-functional specification documentation</li>
+<li>Stakeholder analysis and requirement prioritization frameworks</li>
+<li>Scope management and change control processes</li>
+</ul>
+<p><strong>Examples</strong>:</p>
+<ol>
+<li><strong>Product Requirements Document</strong>: Comprehensive PRD for fintech mobile app with user personas, feature specifications, and success metrics</li>
+<li><strong>API Specification</strong>: Detailed requirements for payment processing API with error handling, security, and performance criteria</li>
+<li><strong>Migration Requirements</strong>: Legacy system modernization requirements with data migration, user training, and rollback procedures</li>
+</ol>
+<p><strong>Works Best With</strong>: system-architect (technical feasibility), technical-writer (documentation), learning-guide (user guidance)</p>
+<h3 id="communication--learning-agents-">Communication &amp; Learning Agents 📚</h3>
+<h3 id="technical-writer-">technical-writer 📚</h3>
+<p><strong>Expertise</strong>: Technical documentation and communication with focus on audience analysis and clarity</p>
+<p><strong>Auto-Activation</strong>:</p>
+<ul>
+<li>Keywords: &quot;documentation&quot;, &quot;readme&quot;, &quot;API docs&quot;, &quot;user guide&quot;, &quot;technical writing&quot;, &quot;manual&quot;</li>
+<li>Context: Documentation requests, API documentation, user guides, technical explanations</li>
+<li>File Types: .md, .rst, API specs, documentation files</li>
+</ul>
+<p><strong>Capabilities</strong>:</p>
+<ul>
+<li>Technical documentation architecture and information design</li>
+<li>Audience analysis and content targeting for different skill levels</li>
+<li>API documentation with working examples and integration guidance</li>
+<li>User guide creation with step-by-step procedures and troubleshooting</li>
+<li>Accessibility standards application and inclusive language usage</li>
+</ul>
+<p><strong>Examples</strong>:</p>
+<ol>
+<li><strong>API Documentation</strong>: Comprehensive REST API docs with authentication, endpoints, examples, and SDK integration guides</li>
+<li><strong>User Manual</strong>: Step-by-step installation and configuration guide with screenshots, troubleshooting, and FAQ sections</li>
+<li><strong>Technical Specification</strong>: System architecture documentation with diagrams, data flows, and implementation details</li>
+</ol>
+<p><strong>Works Best With</strong>: requirements-analyst (specification clarity), learning-guide (educational content), frontend-architect (UI documentation)</p>
+<hr>
+<h3 id="learning-guide-">learning-guide 🎓</h3>
+<p><strong>Expertise</strong>: Educational content design and progressive learning with focus on skill development and mentorship</p>
+<p><strong>Auto-Activation</strong>:</p>
+<ul>
+<li>Keywords: &quot;explain&quot;, &quot;learn&quot;, &quot;tutorial&quot;, &quot;beginner&quot;, &quot;teaching&quot;, &quot;education&quot;, &quot;training&quot;</li>
+<li>Context: Educational requests, concept explanations, skill development, learning paths</li>
+<li>Complexity: Complex topics requiring step-by-step breakdown and progressive understanding</li>
+</ul>
+<p><strong>Capabilities</strong>:</p>
+<ul>
+<li>Learning path design with progressive skill development</li>
+<li>Complex concept explanation through analogies and examples</li>
+<li>Interactive tutorial creation with hands-on exercises</li>
+<li>Skill assessment and competency evaluation frameworks</li>
+<li>Mentorship strategies and personalized learning approaches</li>
+</ul>
+<p><strong>Examples</strong>:</p>
+<ol>
+<li><strong>Programming Tutorial</strong>: Interactive React tutorial with hands-on exercises, code examples, and progressive complexity</li>
+<li><strong>Concept Explanation</strong>: Database normalization explained through real-world examples with visual diagrams and practice exercises</li>
+<li><strong>Skill Assessment</strong>: Comprehensive evaluation framework for full-stack development with practical projects and feedback</li>
+</ol>
+<p><strong>Works Best With</strong>: technical-writer (educational documentation), frontend-architect (interactive learning), requirements-analyst (learning objectives)</p>
+<hr>
+<h2 id="agent-coordination--integration-">Agent Coordination &amp; Integration 🤝</h2>
+<h3 id="coordination-patterns">Coordination Patterns</h3>
+<p><strong>Architecture Teams</strong>:</p>
+<ul>
+<li><strong>Full-Stack Development</strong>: frontend-architect + backend-architect + security-engineer + quality-engineer</li>
+<li><strong>System Design</strong>: system-architect + devops-architect + performance-engineer + security-engineer</li>
+<li><strong>Legacy Modernization</strong>: refactoring-expert + system-architect + quality-engineer + technical-writer</li>
+</ul>
+<p><strong>Quality Teams</strong>:</p>
+<ul>
+<li><strong>Security Audit</strong>: security-engineer + quality-engineer + root-cause-analyst + requirements-analyst</li>
+<li><strong>Performance Optimization</strong>: performance-engineer + system-architect + devops-architect + root-cause-analyst</li>
+<li><strong>Testing Strategy</strong>: quality-engineer + security-engineer + performance-engineer + frontend-architect</li>
+</ul>
+<p><strong>Communication Teams</strong>:</p>
+<ul>
+<li><strong>Documentation Project</strong>: technical-writer + requirements-analyst + learning-guide + domain experts</li>
+<li><strong>Learning Platform</strong>: learning-guide + frontend-architect + technical-writer + quality-engineer</li>
+<li><strong>API Documentation</strong>: backend-architect + technical-writer + security-engineer + quality-engineer</li>
+</ul>
+<h3 id="mcp-server-integration">MCP Server Integration</h3>
+<p><strong>Enhanced Capabilities through MCP Servers</strong>:</p>
+<ul>
+<li><strong>Context7</strong>: Official documentation patterns for all architects and specialists</li>
+<li><strong>Sequential</strong>: Multi-step analysis for root-cause-analyst, system-architect, performance-engineer</li>
+<li><strong>Magic</strong>: UI generation for frontend-architect, learning-guide interactive content</li>
+<li><strong>Playwright</strong>: Browser testing for quality-engineer, accessibility validation for frontend-architect</li>
+<li><strong>Morphllm</strong>: Code transformation for refactoring-expert, bulk changes for python-expert</li>
+<li><strong>Serena</strong>: Project memory for all agents, context preservation across sessions</li>
+</ul>
+<h3 id="troubleshooting-agent-activation">Troubleshooting Agent Activation</h3>
+<h2 id="troubleshooting">Troubleshooting</h2>
+<p>For troubleshooting help, see:</p>
+<ul>
+<li><a href="../reference/common-issues.html">Common Issues</a> - Quick fixes for frequent problems</li>
+<li><a href="../reference/troubleshooting.html">Troubleshooting Guide</a> - Comprehensive problem resolution</li>
+</ul>
+<h3 id="common-issues">Common Issues</h3>
+<ul>
+<li><strong>No agent activation</strong>: Use domain keywords: &quot;security&quot;, &quot;performance&quot;, &quot;frontend&quot;</li>
+<li><strong>Wrong agents selected</strong>: Check trigger keywords in agent documentation</li>
+<li><strong>Too many agents</strong>: Focus keywords on primary domain or use <code>/sc:focus [domain]</code></li>
+<li><strong>Agents not coordinating</strong>: Increase task complexity or use multi-domain keywords</li>
+<li><strong>Agent expertise mismatch</strong>: Use more specific technical terminology</li>
+</ul>
+<h3 id="immediate-fixes">Immediate Fixes</h3>
+<ul>
+<li><strong>Force agent activation</strong>: Use explicit domain keywords in requests</li>
+<li><strong>Reset agent selection</strong>: Restart Claude Code session to reset agent state</li>
+<li><strong>Check agent patterns</strong>: Review trigger keywords in agent documentation</li>
+<li><strong>Test basic activation</strong>: Try <code>/sc:implement &quot;security auth&quot;</code> to test security-engineer</li>
+</ul>
+<h3 id="agent-specific-troubleshooting">Agent-Specific Troubleshooting</h3>
+<p><strong>No Security Agent:</strong></p>
+<pre><code class="language-bash"><span class="hljs-comment"># Problem: Security concerns not triggering security-engineer</span>
+<span class="hljs-comment"># Quick Fix: Use explicit security keywords</span>
+<span class="hljs-string">&quot;implement authentication&quot;</span>              <span class="hljs-comment"># Generic - may not trigger</span>
+<span class="hljs-string">&quot;implement JWT authentication security&quot;</span> <span class="hljs-comment"># Explicit - triggers security-engineer</span>
+<span class="hljs-string">&quot;secure user login with encryption&quot;</span>    <span class="hljs-comment"># Security focus - triggers security-engineer</span>
+</code></pre>
+<p><strong>No Performance Agent:</strong></p>
+<pre><code class="language-bash"><span class="hljs-comment"># Problem: Performance issues not triggering performance-engineer</span>
+<span class="hljs-comment"># Quick Fix: Use performance-specific terminology</span>
+<span class="hljs-string">&quot;make it faster&quot;</span>                       <span class="hljs-comment"># Vague - may not trigger</span>
+<span class="hljs-string">&quot;optimize slow database queries&quot;</span>       <span class="hljs-comment"># Specific - triggers performance-engineer  </span>
+<span class="hljs-string">&quot;reduce API latency and bottlenecks&quot;</span>   <span class="hljs-comment"># Performance focus - triggers performance-engineer</span>
+</code></pre>
+<p><strong>No Architecture Agent:</strong></p>
+<pre><code class="language-bash"><span class="hljs-comment"># Problem: System design not triggering architecture agents</span>
+<span class="hljs-comment"># Quick Fix: Use architectural keywords</span>
+<span class="hljs-string">&quot;build an app&quot;</span>                         <span class="hljs-comment"># Generic - triggers basic agents</span>
+<span class="hljs-string">&quot;design microservices architecture&quot;</span>    <span class="hljs-comment"># Specific - triggers system-architect</span>
+<span class="hljs-string">&quot;scalable distributed system design&quot;</span>   <span class="hljs-comment"># Architecture focus - triggers system-architect</span>
+</code></pre>
+<p><strong>Wrong Agent Combination:</strong></p>
+<pre><code class="language-bash"><span class="hljs-comment"># Problem: Getting frontend agent for backend tasks</span>
+<span class="hljs-comment"># Quick Fix: Use domain-specific terminology</span>
+<span class="hljs-string">&quot;create user interface&quot;</span>                <span class="hljs-comment"># May trigger frontend-architect</span>
+<span class="hljs-string">&quot;create REST API endpoints&quot;</span>            <span class="hljs-comment"># Specific - triggers backend-architect</span>
+<span class="hljs-string">&quot;implement server-side authentication&quot;</span> <span class="hljs-comment"># Backend focus - triggers backend-architect</span>
+</code></pre>
+<h3 id="support-levels">Support Levels</h3>
+<p><strong>Quick Fix:</strong></p>
+<ul>
+<li>Use explicit domain keywords from agent trigger table</li>
+<li>Try restarting Claude Code session</li>
+<li>Focus on single domain to avoid confusion</li>
+</ul>
+<p><strong>Detailed Help:</strong></p>
+<ul>
+<li>See <a href="../reference/common-issues.html">Common Issues Guide</a> for agent installation problems</li>
+<li>Review trigger keywords for target agents</li>
+</ul>
+<p><strong>Expert Support:</strong></p>
+<ul>
+<li>Use <code>SuperClaude install --diagnose</code></li>
+<li>See <a href="../reference/diagnostic-reference.html">Diagnostic Reference Guide</a> for coordination analysis</li>
+</ul>
+<p><strong>Community Support:</strong></p>
+<ul>
+<li>Report issues at <a href="https://github.com/SuperClaude-Org/SuperClaude_Framework/issues">GitHub Issues</a></li>
+<li>Include examples of expected vs actual agent activation</li>
+</ul>
+<h3 id="success-validation">Success Validation</h3>
+<p>After applying agent fixes, test with:</p>
+<ul class="contains-task-list">
+<li class="task-list-item enabled"><input class="task-list-item-checkbox"type="checkbox"> Domain-specific requests activate correct agents (security → security-engineer)</li>
+<li class="task-list-item enabled"><input class="task-list-item-checkbox"type="checkbox"> Complex tasks trigger multi-agent coordination (3+ agents)</li>
+<li class="task-list-item enabled"><input class="task-list-item-checkbox"type="checkbox"> Agent expertise matches task requirements (API → backend-architect)</li>
+<li class="task-list-item enabled"><input class="task-list-item-checkbox"type="checkbox"> Quality agents auto-include when appropriate (security, performance, testing)</li>
+<li class="task-list-item enabled"><input class="task-list-item-checkbox"type="checkbox"> Responses show domain expertise and specialized knowledge</li>
+</ul>
+<h2 id="quick-troubleshooting-legacy">Quick Troubleshooting (Legacy)</h2>
+<ul>
+<li><strong>No agent activation</strong> → Use domain keywords: &quot;security&quot;, &quot;performance&quot;, &quot;frontend&quot;</li>
+<li><strong>Wrong agents</strong> → Check trigger keywords in agent documentation</li>
+<li><strong>Too many agents</strong> → Focus keywords on primary domain</li>
+<li><strong>Agents not coordinating</strong> → Increase task complexity or use multi-domain keywords</li>
+</ul>
+<p><strong>Agent Not Activating?</strong></p>
+<ol>
+<li><strong>Check Keywords</strong>: Use domain-specific terminology (e.g., &quot;authentication&quot; not &quot;login&quot; for security-engineer)</li>
+<li><strong>Add Context</strong>: Include file types, frameworks, or specific technologies</li>
+<li><strong>Increase Complexity</strong>: Multi-domain problems trigger more agents</li>
+<li><strong>Use Examples</strong>: Reference concrete scenarios that match agent expertise</li>
+</ol>
+<p><strong>Too Many Agents?</strong></p>
+<ul>
+<li>Focus keywords on primary domain needs</li>
+<li>Use <code>/sc:focus [domain]</code> to limit scope</li>
+<li>Start with specific agents, expand as needed</li>
+</ul>
+<p><strong>Wrong Agents?</strong></p>
+<ul>
+<li>Review trigger keywords in agent documentation</li>
+<li>Use more specific terminology for target domain</li>
+<li>Add explicit requirements or constraints</li>
+</ul>
+<h2 id="quick-reference-">Quick Reference 📋</h2>
+<h3 id="agent-trigger-lookup">Agent Trigger Lookup</h3>
+<table>
+<thead>
+<tr>
+<th>Trigger Type</th>
+<th>Keywords/Patterns</th>
+<th>Activated Agents</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Security</strong></td>
+<td>&quot;auth&quot;, &quot;security&quot;, &quot;vulnerability&quot;, &quot;encryption&quot;</td>
+<td>security-engineer</td>
+</tr>
+<tr>
+<td><strong>Performance</strong></td>
+<td>&quot;slow&quot;, &quot;optimization&quot;, &quot;bottleneck&quot;, &quot;latency&quot;</td>
+<td>performance-engineer</td>
+</tr>
+<tr>
+<td><strong>Frontend</strong></td>
+<td>&quot;UI&quot;, &quot;React&quot;, &quot;Vue&quot;, &quot;component&quot;, &quot;responsive&quot;</td>
+<td>frontend-architect</td>
+</tr>
+<tr>
+<td><strong>Backend</strong></td>
+<td>&quot;API&quot;, &quot;server&quot;, &quot;database&quot;, &quot;REST&quot;, &quot;GraphQL&quot;</td>
+<td>backend-architect</td>
+</tr>
+<tr>
+<td><strong>Testing</strong></td>
+<td>&quot;test&quot;, &quot;QA&quot;, &quot;validation&quot;, &quot;coverage&quot;</td>
+<td>quality-engineer</td>
+</tr>
+<tr>
+<td><strong>DevOps</strong></td>
+<td>&quot;deploy&quot;, &quot;CI/CD&quot;, &quot;Docker&quot;, &quot;Kubernetes&quot;</td>
+<td>devops-architect</td>
+</tr>
+<tr>
+<td><strong>Architecture</strong></td>
+<td>&quot;architecture&quot;, &quot;microservices&quot;, &quot;scalability&quot;</td>
+<td>system-architect</td>
+</tr>
+<tr>
+<td><strong>Python</strong></td>
+<td>&quot;.py&quot;, &quot;Django&quot;, &quot;FastAPI&quot;, &quot;asyncio&quot;</td>
+<td>python-expert</td>
+</tr>
+<tr>
+<td><strong>Problems</strong></td>
+<td>&quot;bug&quot;, &quot;issue&quot;, &quot;debugging&quot;, &quot;troubleshoot&quot;</td>
+<td>root-cause-analyst</td>
+</tr>
+<tr>
+<td><strong>Code Quality</strong></td>
+<td>&quot;refactor&quot;, &quot;clean code&quot;, &quot;technical debt&quot;</td>
+<td>refactoring-expert</td>
+</tr>
+<tr>
+<td><strong>Documentation</strong></td>
+<td>&quot;documentation&quot;, &quot;readme&quot;, &quot;API docs&quot;</td>
+<td>technical-writer</td>
+</tr>
+<tr>
+<td><strong>Learning</strong></td>
+<td>&quot;explain&quot;, &quot;tutorial&quot;, &quot;beginner&quot;, &quot;teaching&quot;</td>
+<td>learning-guide</td>
+</tr>
+<tr>
+<td><strong>Requirements</strong></td>
+<td>&quot;requirements&quot;, &quot;PRD&quot;, &quot;specification&quot;</td>
+<td>requirements-analyst</td>
+</tr>
+<tr>
+<td><strong>Research</strong></td>
+<td>&quot;research&quot;, &quot;investigate&quot;, &quot;latest&quot;, &quot;current&quot;</td>
+<td>deep-research-agent</td>
+</tr>
+</tbody>
+</table>
+<h3 id="command-agent-mapping">Command-Agent Mapping</h3>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Primary Agents</th>
+<th>Supporting Agents</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>/sc:implement</code></td>
+<td>Domain architects (frontend, backend)</td>
+<td>security-engineer, quality-engineer</td>
+</tr>
+<tr>
+<td><code>/sc:analyze</code></td>
+<td>quality-engineer, security-engineer</td>
+<td>performance-engineer, root-cause-analyst</td>
+</tr>
+<tr>
+<td><code>/sc:troubleshoot</code></td>
+<td>root-cause-analyst</td>
+<td>Domain specialists, performance-engineer</td>
+</tr>
+<tr>
+<td><code>/sc:improve</code></td>
+<td>refactoring-expert</td>
+<td>quality-engineer, performance-engineer</td>
+</tr>
+<tr>
+<td><code>/sc:document</code></td>
+<td>technical-writer</td>
+<td>Domain specialists, learning-guide</td>
+</tr>
+<tr>
+<td><code>/sc:design</code></td>
+<td>system-architect</td>
+<td>Domain architects, requirements-analyst</td>
+</tr>
+<tr>
+<td><code>/sc:test</code></td>
+<td>quality-engineer</td>
+<td>security-engineer, performance-engineer</td>
+</tr>
+<tr>
+<td><code>/sc:explain</code></td>
+<td>learning-guide</td>
+<td>technical-writer, domain specialists</td>
+</tr>
+<tr>
+<td><code>/sc:research</code></td>
+<td>deep-research-agent</td>
+<td>Technical specialists, learning-guide</td>
+</tr>
+</tbody>
+</table>
+<h3 id="effective-agent-combinations">Effective Agent Combinations</h3>
+<p><strong>Development Workflows</strong>:</p>
+<ul>
+<li>Web application: frontend-architect + backend-architect + security-engineer + quality-engineer + devops-architect</li>
+<li>API development: backend-architect + security-engineer + technical-writer + quality-engineer</li>
+<li>Data platform: python-expert + performance-engineer + security-engineer + system-architect</li>
+</ul>
+<p><strong>Analysis Workflows</strong>:</p>
+<ul>
+<li>Security audit: security-engineer + quality-engineer + root-cause-analyst + technical-writer</li>
+<li>Performance investigation: performance-engineer + root-cause-analyst + system-architect + devops-architect</li>
+<li>Legacy assessment: refactoring-expert + system-architect + quality-engineer + security-engineer + technical-writer</li>
+</ul>
+<p><strong>Communication Workflows</strong>:</p>
+<ul>
+<li>Technical documentation: technical-writer + requirements-analyst + domain experts + learning-guide</li>
+<li>Educational content: learning-guide + technical-writer + frontend-architect + quality-engineer</li>
+</ul>
+<h2 id="best-practices-">Best Practices 💡</h2>
+<h3 id="getting-started-simple-approach">Getting Started (Simple Approach)</h3>
+<p><strong>Natural Language First:</strong></p>
+<ol>
+<li><strong>Describe Your Goal</strong>: Use natural language with domain-specific keywords</li>
+<li><strong>Trust Auto-Activation</strong>: Let the system route to appropriate agents automatically</li>
+<li><strong>Learn from Patterns</strong>: Observe which agents activate for different request types</li>
+<li><strong>Iterate and Refine</strong>: Add specificity to engage additional specialist agents</li>
+</ol>
+<h3 id="optimizing-agent-selection">Optimizing Agent Selection</h3>
+<p><strong>Effective Keyword Usage:</strong></p>
+<ul>
+<li><strong>Specific &gt; Generic</strong>: Use &quot;authentication&quot; instead of &quot;login&quot; for security-engineer</li>
+<li><strong>Technical Terms</strong>: Include framework names, technologies, and specific challenges</li>
+<li><strong>Context Clues</strong>: Mention file types, project scope, and complexity indicators</li>
+<li><strong>Quality Keywords</strong>: Add &quot;security&quot;, &quot;performance&quot;, &quot;accessibility&quot; for comprehensive coverage</li>
+</ul>
+<p><strong>Request Optimization Examples:</strong></p>
+<pre><code class="language-bash"><span class="hljs-comment"># Generic (limited agent activation)</span>
+<span class="hljs-string">&quot;Fix the login feature&quot;</span>
+
+<span class="hljs-comment"># Optimized (multi-agent coordination)  </span>
+<span class="hljs-string">&quot;Implement secure JWT authentication with rate limiting and accessibility compliance&quot;</span>
+<span class="hljs-comment"># → Triggers: security-engineer + backend-architect + frontend-architect + quality-engineer</span>
+</code></pre>
+<h3 id="common-usage-patterns">Common Usage Patterns</h3>
+<p><strong>Development Workflows:</strong></p>
+<pre><code class="language-bash"><span class="hljs-comment"># Full-stack feature development</span>
+/sc:implement <span class="hljs-string">&quot;responsive user dashboard with real-time notifications&quot;</span>
+<span class="hljs-comment"># → frontend-architect + backend-architect + performance-engineer</span>
+
+<span class="hljs-comment"># API development with documentation</span>
+/sc:create <span class="hljs-string">&quot;REST API for payment processing with comprehensive docs&quot;</span>  
+<span class="hljs-comment"># → backend-architect + security-engineer + technical-writer + quality-engineer</span>
+
+<span class="hljs-comment"># Performance optimization investigation</span>
+/sc:troubleshoot <span class="hljs-string">&quot;slow database queries affecting user experience&quot;</span>
+<span class="hljs-comment"># → performance-engineer + root-cause-analyst + backend-architect</span>
+</code></pre>
+<p><strong>Analysis Workflows:</strong></p>
+<pre><code class="language-bash"><span class="hljs-comment"># Security assessment</span>
+/sc:analyze <span class="hljs-string">&quot;authentication system for GDPR compliance vulnerabilities&quot;</span>
+<span class="hljs-comment"># → security-engineer + quality-engineer + requirements-analyst</span>
+
+<span class="hljs-comment"># Code quality review  </span>
+/sc:review <span class="hljs-string">&quot;legacy codebase for modernization opportunities&quot;</span>
+<span class="hljs-comment"># → refactoring-expert + system-architect + quality-engineer + technical-writer</span>
+
+<span class="hljs-comment"># Learning and explanation</span>
+/sc:explain <span class="hljs-string">&quot;microservices patterns with hands-on examples&quot;</span>
+<span class="hljs-comment"># → system-architect + learning-guide + technical-writer</span>
+</code></pre>
+<h3 id="advanced-agent-coordination">Advanced Agent Coordination</h3>
+<p><strong>Multi-Domain Projects:</strong></p>
+<ul>
+<li><strong>Start Broad</strong>: Begin with system-level keywords to engage architecture agents</li>
+<li><strong>Add Specificity</strong>: Include domain-specific needs to activate specialist agents</li>
+<li><strong>Quality Integration</strong>: Automatically include security, performance, and testing perspectives</li>
+<li><strong>Documentation Inclusion</strong>: Add learning or documentation needs for comprehensive coverage</li>
+</ul>
+<p><strong>Troubleshooting Agent Selection:</strong></p>
+<p><strong>Problem: Wrong agents activating</strong></p>
+<ul>
+<li>Solution: Use more specific domain terminology</li>
+<li>Example: &quot;database optimization&quot; → performance-engineer + backend-architect</li>
+</ul>
+<p><strong>Problem: Not enough agents</strong></p>
+<ul>
+<li>Solution: Increase complexity indicators and cross-domain keywords</li>
+<li>Example: Add &quot;security&quot;, &quot;performance&quot;, &quot;documentation&quot; to requests</li>
+</ul>
+<p><strong>Problem: Too many agents</strong></p>
+<ul>
+<li>Solution: Focus on primary domain with specific technical terms</li>
+<li>Example: Use &quot;/sc:focus backend&quot; to limit scope</li>
+</ul>
+<h3 id="quality-driven-development">Quality-Driven Development</h3>
+<p><strong>Security-First Approach:</strong>
+Always include security considerations in development requests to automatically engage security-engineer alongside domain specialists.</p>
+<p><strong>Performance Integration:</strong>
+Include performance keywords (&quot;fast&quot;, &quot;efficient&quot;, &quot;scalable&quot;) to ensure performance-engineer coordination from the start.</p>
+<p><strong>Accessibility Compliance:</strong>
+Use &quot;accessible&quot;, &quot;WCAG&quot;, or &quot;inclusive&quot; to automatically include accessibility validation in frontend development.</p>
+<p><strong>Documentation Culture:</strong>
+Add &quot;documented&quot;, &quot;explained&quot;, or &quot;tutorial&quot; to requests for automatic technical-writer inclusion and knowledge transfer.</p>
+<hr>
+<h2 id="understanding-agent-intelligence-">Understanding Agent Intelligence 🧠</h2>
+<h3 id="what-makes-agents-effective">What Makes Agents Effective</h3>
+<p><strong>Domain Expertise</strong>: Each agent has specialized knowledge patterns, behavioral approaches, and problem-solving methodologies specific to their domain.</p>
+<p><strong>Contextual Activation</strong>: Agents analyze request context, not just keywords, to determine relevance and engagement level.</p>
+<p><strong>Collaborative Intelligence</strong>: Multi-agent coordination produces synergistic results that exceed individual agent capabilities.</p>
+<p><strong>Adaptive Learning</strong>: Agent selection improves based on request patterns and successful coordination outcomes.</p>
+<h3 id="agent-vs-traditional-ai">Agent vs. Traditional AI</h3>
+<p><strong>Traditional Approach</strong>: Single AI handles all domains with varying levels of expertise
+<strong>Agent Approach</strong>: Specialized experts collaborate with deep domain knowledge and focused problem-solving</p>
+<p><strong>Benefits</strong>:</p>
+<ul>
+<li>Higher accuracy in domain-specific tasks</li>
+<li>More sophisticated problem-solving methodologies</li>
+<li>Better quality assurance through specialist review</li>
+<li>Coordinated multi-perspective analysis</li>
+</ul>
+<h3 id="trust-the-system-understand-the-patterns">Trust the System, Understand the Patterns</h3>
+<p><strong>What to Expect</strong>:</p>
+<ul>
+<li>Automatic routing to appropriate domain experts</li>
+<li>Multi-agent coordination for complex tasks</li>
+<li>Quality integration through automatic QA agent inclusion</li>
+<li>Learning opportunities through educational agent activation</li>
+</ul>
+<p><strong>What Not to Worry About</strong>:</p>
+<ul>
+<li>Manual agent selection or configuration</li>
+<li>Complex routing rules or agent management</li>
+<li>Agent configuration or coordination</li>
+<li>Micromanaging agent interactions</li>
+</ul>
+<hr>
+<h2 id="related-resources-">Related Resources 📚</h2>
+<h3 id="essential-documentation">Essential Documentation</h3>
+<ul>
+<li><strong><a href="commands.html">Commands Guide</a></strong> - Master SuperClaude commands that trigger optimal agent coordination</li>
+<li><strong><a href="mcp-servers.html">MCP Servers</a></strong> - Enhanced agent capabilities through specialized tool integration</li>
+<li><strong><a href="session-management.html">Session Management</a></strong> - Long-term workflows with persistent agent context</li>
+</ul>
+<h3 id="advanced-usage">Advanced Usage</h3>
+<ul>
+<li><strong><a href="modes.html">Behavioral Modes</a></strong> - Context optimization for enhanced agent coordination</li>
+<li><strong><a href="../getting-started/quick-start.html">Getting Started</a></strong> - Expert techniques for agent optimization</li>
+<li><strong><a href="../reference/examples-cookbook.html">Examples Cookbook</a></strong> - Real-world agent coordination patterns</li>
+</ul>
+<h3 id="development-resources">Development Resources</h3>
+<ul>
+<li><strong><a href="../developer-guide/technical-architecture.html">Technical Architecture</a></strong> - Understanding SuperClaude's agent system design</li>
+<li><strong><a href="../developer-guide/contributing-code.html">Contributing</a></strong> - Extending agent capabilities and coordination patterns</li>
+</ul>
+<hr>
+<h2 id="your-agent-journey-">Your Agent Journey 🚀</h2>
+<p><strong>Week 1: Natural Usage</strong>
+Start with natural language descriptions. Notice which agents activate and why. Build intuition for keyword patterns without overthinking the process.</p>
+<p><strong>Week 2-3: Pattern Recognition</strong><br>
+Observe agent coordination patterns. Understand how complexity and domain keywords influence agent selection. Begin optimizing request phrasing for better coordination.</p>
+<p><strong>Month 2+: Expert Coordination</strong>
+Master multi-domain requests that trigger optimal agent combinations. Leverage troubleshooting techniques for effective agent selection. Use advanced patterns for complex workflows.</p>
+<p><strong>The SuperClaude Advantage:</strong>
+Experience the power of 14 specialized AI experts working in coordinated response, all through simple, natural language requests. No configuration, no management, just intelligent collaboration that scales with your needs.</p>
+<p>🎯 <strong>Ready to experience intelligent agent coordination? Start with <code>/sc:implement</code> and discover the magic of specialized AI collaboration.</strong></p>
